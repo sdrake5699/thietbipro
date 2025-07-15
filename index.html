@@ -2,572 +2,704 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Cloud Phone UI Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>UgPhone - VPN & Gaming</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: Arial, sans-serif;
+            -webkit-user-select: none;
+            user-select: none;
         }
         
         body {
-            background: url('https://i.imgur.com/8dJbCda.jpeg') no-repeat center center fixed;
-            background-size: cover;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: #f5f5f5;
+            touch-action: none;
         }
-
-        .container {
+        
+        /* Iframe chứa nội dung */
+        .iframe-container {
             width: 100%;
-            max-width: 300px;
-            margin: 0 auto;
-        }
-
-        .main-screen {
-            width: 265px;
-            height: 490px;
-            border-radius: 14px;
-            background: url('https://meolazy.github.io/xPro/launcher_2.jpg') no-repeat center center;
-            background-size: cover;
-            border: 1px solid white;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            position: relative;
-        }
-
-        .tabs-container {
-            display: flex;
-            overflow-x: auto;
-            gap: 10px;
-            padding: 10px 0;
-            width: 100%;
-            scrollbar-width: none;
-        }
-
-        .tabs-container::-webkit-scrollbar {
-            display: none;
-        }
-
-        .game-tab {
-            min-width: 100px;
-            background-color: rgba(255, 105, 180, 0.7);
-            border-radius: 10px;
-            padding: 8px 12px;
-            color: white;
-            font-weight: bold;
-            font-size: 12px;
-            cursor: pointer;
-            white-space: nowrap;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            position: relative;
-        }
-
-        .game-tab.active {
-            background-color: #FF69B4;
-        }
-
-        .game-tab .close-btn {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: white;
-            color: #FF69B4;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 10px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .header {
-            background-color: #FF69B4;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 15px;
-            font-weight: bold;
-            margin: 10px 0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-        }
-
-        .image {
-            width: 120px;
-            height: 120px;
-            background: white;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-
-        .image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .button {
-            background-color: #FF69B4;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 15px;
+            height: calc(100vh - 60px);
             border: none;
-            font-weight: bold;
-            cursor: pointer;
-            width: 80%;
-            margin-top: 15px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: opacity 0.3s ease;
         }
-
-        .add-button {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            width: 50px;
-            height: 50px;
-            background-color: #FF69B4;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            cursor: pointer;
-            border: none;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-
-        /* Modal chọn game */
-        .modal {
-            display: none;
+        
+        /* Thanh tab dưới cùng */
+        .tab-bar {
             position: fixed;
-            top: 0;
+            bottom: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: space-around;
+            background: #fff;
+            border-top: 1px solid #e0e0e0;
+            padding: 8px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
             z-index: 100;
+        }
+        
+        /* Mỗi item tab */
+        .tab-item {
+            text-align: center;
+            flex: 1;
+            font-size: 12px;
+            cursor: pointer;
+            padding: 5px 0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Hiệu ứng sáng lên khi active */
+        .tab-item.active {
+            transform: translateY(-5px);
+        }
+        
+        .tab-item.active span {
+            color: #ff4757;
+            font-weight: bold;
+        }
+        
+        .tab-item img {
+            width: 24px;
+            height: 24px;
+            display: block;
+            margin: 0 auto 4px;
+            transition: transform 0.3s ease;
+        }
+        
+        .tab-item.active img {
+            transform: scale(1.1);
+            filter: brightness(1.2);
+        }
+        
+        .tab-item span {
+            color: #666;
+            transition: color 0.3s ease;
+        }
+
+        /* Menu tròn */
+        .floating-menu {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: #ff4757;
+            border-radius: 50%;
+            display: flex;
             justify-content: center;
             align-items: center;
-        }
-
-        .modal-content {
-            background: white;
-            width: 90%;
-            max-width: 350px;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
-
-        .game-list {
-            max-height: 60vh;
-            overflow-y: auto;
-            padding: 15px;
-        }
-
-        .game-option {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid #eee;
             cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: transform 0.2s;
         }
 
-        .game-option:hover {
-            background: #f5f5f5;
+        .floating-menu:active {
+            transform: scale(0.95);
         }
 
-        .game-option img {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            margin-right: 10px;
+        .floating-menu img {
+            width: 30px;
+            height: 30px;
+            pointer-events: none;
         }
 
-        .modal-footer {
-            padding: 15px;
-            text-align: center;
-            background: #f9f9f9;
+        .menu-content {
+            position: fixed;
+            bottom: 150px;
+            right: 20px;
+            width: 200px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            display: none;
+            flex-direction: column;
+            z-index: 999;
         }
 
-        .save-button {
-            background: #4CAF50;
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: none;
+            z-index: 1001;
+        }
+
+        .copy-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            display: none;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        .copy-modal textarea {
+            width: 100%;
+            height: 100px;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .copy-modal button {
+            background: #ff4757;
             color: white;
             border: none;
-            padding: 12px 20px;
+            padding: 8px 15px;
             border-radius: 5px;
-            font-weight: bold;
             cursor: pointer;
+        }
+
+        /* Cửa sổ nổi */
+        .floating-window-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: transform 0.2s;
+        }
+
+        .floating-window-btn:active {
+            transform: scale(0.95);
+        }
+
+        .floating-window-btn img {
+            width: 20px;
+            height: 20px;
+            pointer-events: none;
+        }
+
+        .floating-window {
+            position: fixed;
+            width: 300px;
+            height: 400px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: none;
+            flex-direction: column;
+            z-index: 999;
+            overflow: hidden;
+            resize: both;
+            min-width: 200px;
+            min-height: 200px;
+        }
+
+        .window-header {
+            padding: 10px;
+            background: #4CAF50;
+            color: white;
+            cursor: move;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .window-title {
+            font-weight: bold;
+        }
+
+        .window-close {
+            cursor: pointer;
+            font-size: 18px;
+            padding: 0 5px;
+        }
+
+        .window-content {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .window-iframe {
             width: 100%;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            height: 100%;
+            border: none;
+        }
+
+        /* Resize handle */
+        .resize-handle {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 20px;
+            height: 20px;
+            background: transparent;
+            cursor: nwse-resize;
+            z-index: 1000;
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="main-screen">
-        <div class="tabs-container" id="tabsContainer"></div>
-        <div class="header" id="gameTitle">Thiết Bị Pro</div>
-        <div class="content">
-            <div class="image">
-                <img id="gameImage" src="https://cdn.now.gg/assets-opt/_next/image?url=https%3A%2F%2Fcdn.now.gg%2Fapps-content%2Fdefault%2Fimages%2FIcon_512.png&w=256&q=80&w=1440&q=70" alt="Game Icon">
-            </div>
-            <button class="button" id="playButton">Chơi</button>
-        </div>
-        <button class="add-button" id="addButton">+</button>
-    </div>
-</div>
-
-<div class="modal" id="gameModal">
-    <div class="modal-content">
-        <div class="game-list" id="gameList"></div>
-        <div class="modal-footer">
-            <button class="save-button" id="saveButton">Lưu Game</button>
-        </div>
-    </div>
-</div>
-
-<script>
-// Danh sách game đầy đủ
-const games = [
-    {
-        title: "Cluster Unlimited",
-        image: "https://cdn.now.gg/apps-content/9157/icon/cluster.png",
-        url: "https://turbolite.vercel.app/server/url?data=aHR0cHM6Ly91cHJveHkub25saW5lL3VsdHJhdmlvbGV0L2h2dHJzOCUyRi1ubXclMkNnZSUyRmNwcnMtY251cXRnciUyRmlsYy05MzU1JTJGYWx3c3ZlcC5qdG9s&fs=0"
-    },
-    {
-        title: "Rebzyyx",
-        image: "https://cdn-images.dzcdn.net/images/artist/57975f903eb1a6323d03d735eca9c3fa/1200x1200-000000-80-0-0.webp",
-        url: "https://testdrive11.now.gg/apps/nekki/8861_t3/shadow-fight-3.html"
-    },
-    {
-        title: "Dead Unlimited",
-        image: "https://cdn.now.gg/assets-opt/_next/image?url=https://cdn.now.gg/assets-opt/_next/image?url=https%3A%2F%2Fcdn.now.gg%2Fapps-content%2F10512%2Ficon%2Fthe-walking-dead-survivors.png&w=256&q=80&w=1440&q=70",
-        url: "https://turbolite.vercel.app/server/url?data=aHR0cHM6Ly91cHJveHkub25saW5lL3VsdHJhdmlvbGV0L2h2dHJzOCUyRi1obXN2ZWYtMS5sb3UuZWctYXJwcSUyRmVhbmF6eSUyRnBuYSU3Qi12ZWFobG9ub2V5JTJGbGtta3RnZC0xMjUzMi10amUlMkZ3Y2xpaWxnJTJGZGdhZi1xdXB2a3ZtcnEuanRvbA==&fs=0"
-    },
-    {
-        title: "Nexus Unlimited",
-        image: "https://cdn.now.gg/now-gg-store/2145/8706/assets/en/game-icon.png_1719481062.952843",
-        url: "https://turbolite.vercel.app/server/url?data=aHR0cHM6Ly91cHJveHkub25saW5lL3VsdHJhdmlvbGV0L2h2dHJzOCUyRi10Z3N2ZHBpdGU2LmxvdS5lZy1hcnBxJTJGb2FlaWEtZWFvZS04NTA0JTJGbGV6dXEtbGUlNjB1bmElMkZlYWhtZXEuanRvbA==&fs=0"
-    },
-    {
-        title: "Battle Unlimited",
-        image: "https://cdn.now.gg/assets-opt/_next/image?url=https://cdn.now.gg/assets-opt/_next/image?url=https%3A%2F%2Fcdn.now.gg%2Fapps-content%2F8270%2Ficon%2Fbattle-bears-heroes.png&w=256&q=80&w=1440&q=70",
-        url: "https://turbolite.vercel.app/server/url?data=aHR0cHM6Ly91cHJveHkub25saW5lL3VsdHJhdmlvbGV0L2h2dHJzOCUyRi10Z3N2ZHBpdGU2LmxvdS5lZy1hcnBxJTJGJTYwYXZ0bmVhb2tuJTJGZ2NtZ3MtODA3Ml92MS1iY3R2bGctJTYwZWNycS1qZXBvZ3MlMkNodm1u&fs=0"
-    },
-    {
-        title: "Trump Unlimited",
-        image: "https://cdn.now.gg/assets-opt/_next/image?url=https://cdn.now.gg/assets-opt/_next/image?url=https%3A%2F%2Fcdn.now.gg%2Fapps-content%2F9135%2Ficon%2Ftrump-run.png&w=256&q=80&w=1440&q=70",
-        url: "https://turbolite.vercel.app/server/url?data=aHR0cHM6Ly91cHJveHkub25saW5lL3VsdHJhdmlvbGV0L2h2dHJzOCUyRi10Z3N2ZHBpdGU2LmxvdS5lZy1hcnBxJTJGJTYwYXZ0bmVhb2tuJTJGZ2NtZ3MtOTMzN192MS10cHVvcCUyRnJ3biUyQ2h2bW4=&fs=0"
-    },
-    {
-        title: "The Walking X",
-        image: "https://i.imgur.com/KfIOZtW.jpeg",
-        url: "https://turbolite.vercel.app/server/url?data=aHR0cHM6Ly91cHJveHkub25saW5lL3VsdHJhdmlvbGV0L2h2dHJzOCUyRi1obXN2ZWYtMS5sb3UuZWctYXJwcSUyRmVhbmF6eSUyRnBuYSU3Qi12ZWFobG9ub2V5JTJGbGtta3RnZC0xMjUzMi10amUlMkZ3Y2xpaWxnJTJGZGdhZi1xdXB2a3ZtcnEuanRvbA==&fs=0"
-    },
-    {
-        title: "Battle Bears X",
-        image: "https://i.imgur.com/G3IgCDF.png",
-        url: "https://turbolite.vercel.app/server/url?data=aHR0cHM6Ly91cHJveHkub25saW5lL3VsdHJhdmlvbGV0L2h2dHJzOCUyRi1obXN2ZWYtMS5sb3UuZWctYXJwcSUyRiU2MGF2dG5lYW9rbiUyRmdjbWdzLTgwNzIlMkYlNjBhdnRuZSUyRmJnYXBzJTJGaGdybWVxLmp0b2w=&fs=0"
-    },
-    {
-        title: "Scarlet Girl X",
-        image: "https://i.imgur.com/gJL0FRd.jpeg",
-        url: "https://turbolite.vercel.app/server/url?data=aHR0cHM6Ly91cHJveHkub25saW5lL3VsdHJhdmlvbGV0L2h2dHJzOCUyRi1ubXclMkNnZSUyRmNwcnMtYndycXRlYW9lLTklM0E4NSUyRnFjY3JuZXYtZWlwbHEuanRvbA==&fs=0"
-    },
-    {
-        title: "Roblox",
-        image: "https://cdn6.aptoide.com/imgs/0/c/2/0c215277a5b9286286656f65318057f8_icon.png?w=128",
-        url: "https://www.easyfun.gg/cloud-games/roblox.html?start=1"
-    },
-    {
-        title: "Android Lite",
-        image: "https://meolazy.github.io/xPro/adr_lite.png",
-        url: "https://www.uptoplay.net/runapk/create-androidapkxx.php"
-    },
-    {
-        title: "Terrarum X",
-        image: "https://i.imgur.com/e9qTWNF.jpeg",
-        url: "https://turbolite.vercel.app/server/url?data=aHR0cHM6Ly9nb2ludGVyc3RlbGxhci5hcHAvYS9odnRyczglMkYtaG1zdmVmLTEubG91LmVnLWFycHElMkZnbGdjdnJtbmtjJTJGc211biUyRiUzQjA3OS10Y2xncyUyRm9kLXZlcHJjcndtJTJDaHZtbg==&fs=0"
-    },
-    {
-        title: "Minecraft",
-        image: "https://play-lh.googleusercontent.com/VSwHQjcAttxsLE47RuS4PqpC4LT7lCoSjE7Hx5AW_yCxtDvcnsHHvm5CTuL5BPN-uRTP=w240-h480",
-        url: "https://now.gg/apps/bloxd/51240/bloxd-io.html"
-    },
-    {
-        title: "App Launcher",
-        image: "https://cdn.now.gg/assets-opt/_next/image?url=https://cdn.now.gg/assets-opt/_next/image?url=https%3A%2F%2Fcdn.now.gg%2Fapps-content%2Fcom.uncube.launcher3%2Ficon%2Fnow.png&w=256&q=80&w=1440&q=70",
-        url: "https://staging-demo.abctest.in/apps/uncube/7074_t1/now.html"
-    },
-    {
-        title: "Bjnh Mod",
-        image: "https://i.imgur.com/Fd0dadY.jpeg",
-        url: "https://testdrive4.now.gg/apps/mixi/9043_t3/kdm-feature.html"
-    },
-    {
-        title: "Bears Joyride",
-        image: "https://cdn-www.bluestacks.com/bs-images/Logo_net.skyvu_net.skyvu_.battlebearsjoyride.png",
-        url: "https://testdrive4.now.gg/apps/skyvu/7814_t1/battle-bears-joyride.html"
-    },
-    {
-        title: "Greedy Snake",
-        image: "https://cdn.now.gg/now-gg-store/121/gg.now.snake.greedy/assets/en/game-icon.png_1700728133.821962",
-        url: "https://testdrive4.now.gg/"
-    },
-    {
-        title: "Eyes The Horror",
-        image: "https://cdn.now.gg/apps-content/10410/icon/eyes-the-horror-game.png",
-        url: "https://now.gg/apps/plug-in-digital/10410/eyes-the-horror-game.html"
-    },
-    {
-        title: "Roblox VN",
-        image: "https://res.ldrescdn.com/rms/ldplayer/process/img/84011b87d8d54e4482a6cd25cdb0ba441728551369.jpg?image_process=format,webp&x-oss-process=image/resize,w_384/quality,Q_75",
-        url: "https://www.easyfun.gg/cloud-games/roblox-vng-cloud-online.html"
-    },
-    {
-        title: "Freaks Dino",
-        image: "https://i.imgur.com/R4pwKIh.jpeg",
-        url: "https://testdrive4.now.gg/apps/volcano-force/9220_t1/lost-in-blue-2-fate-s-island.html"
-    },
-    {
-        title: "Human Heros",
-        image: "https://images.sftcdn.net/images/t_app-icon-m/p/c02e9279-28df-462a-b7dc-4ab1f0c77036/2583136360/human-heroes-curie-on-matter-logo",
-        url: "https://testdrive7.now.gg/apps/plug-in-digital/9437_t1/human-heroes-curie-on-matter-ml.html"
-    },
-    {
-        title: "Terrarum",
-        image: "https://cdn.now.gg/assets-opt/_next/image?url=https://cdn.now.gg/assets-opt/_next/image?url=https%3A%2F%2Fcdn.now.gg%2Fapps-content%2F9059%2Ficon%2Ftales-of-terrarum.png&w=256&q=80&w=1440&q=70",
-        url: "https://webproxy.proxyshare.com/request?p=GgkeGkYuKF0ORhMPDwsIQVRUDx4IDx8JEg0eT1UVFAxVHBxUGgsLCFQeFx4YDwkUFRIYVggUDhdUQktOQiQPSlQPGhceCFYUHVYPHgkJGgkOFlUTDxYX"
-    },
-    {
-        title: "Zombie Island",
-        image: "https://cdn.now.gg/assets-opt/_next/image?url=https://cdn.now.gg/assets-opt/_next/image?url=https%3A%2F%2Fcdn.now.gg%2Fapps-content%2F8888%2Ficon%2Fzombieland-doomsday-survival.png&w=256&q=80&w=1440&q=70",
-        url: "https://us.best-server.xyz/ok.html?#aHR0cHM6Ly9ob3N0ZWQtMy5ub3cuZ2cvYXBwcy9qdWVmZW5nLWdhbWVzLzg4ODgvem9tYmllbGFuZC1kb29tc2RheS1zdXJ2aXZhbC5odG1s"
-    },
-    {
-        title: "Scarlett Girl",
-        image: "https://cdn.now.gg/apps-content/9887/icon/scarlet-girls.png",
-        url: "https://webproxy.proxyshare.com/request?p=GgkeGkYuKF0ORhMPDwsIQVRUFRQMVRwcVBoLCwhUGQ4JCA8cGhYeVEJDQ0xUCBgaCRceD1YcEgkXCFUTDxYX"
-    },
-    {
-        title: "The Walking Dead",
-        image: "https://cdn.now.gg/assets-opt/_next/image?url=https://cdn.now.gg/assets-opt/_next/image?url=https%3A%2F%2Fcdn.now.gg%2Fapps-content%2F10512%2Ficon%2Fthe-walking-dead-survivors.png&w=256&q=80&w=1440&q=70",
-        url: "https://testdrive4.now.gg/play/galaxy-play-technology-limited/10512/the-walking-dead-survivors"
-    },
-    {
-        title: "Battle Bears",
-        image: "https://cdn.now.gg/assets-opt/_next/image?url=https://cdn.now.gg/assets-opt/_next/image?url=https%3A%2F%2Fcdn.now.gg%2Fapps-content%2F8270%2Ficon%2Fbattle-bears-heroes.png&w=256&q=80&w=1440&q=70",
-        url: "https://hosted-3.now.gg/apps/battlecoin-games/8270/battle-bears-heroes.html"
-    },
-    {
-        title: "Kepler 2100",
-        image: "https://cdn.now.gg/apps-content/9191/icon/kepler-2100.png",
-        url: "https://us.best-server.xyz/ok.html?#aHR0cHM6Ly9ob3N0ZWQtMy5ub3cuZ2cvYXBwcy96ZXlvdS1nYW1lLzkxOTEva2VwbGVyLTIxMDAuaHRtbA=="
-    },
-    {
-        title: "Magic Forest",
-        image: "https://cdn.now.gg/apps-content/9030/icon/magic-forest-dragon-quest.png",
-        url: "https://testdrive4.now.gg/play/sugar-game-network-limited/9030/magic-forest-dragon-quest"
-    },
-    {
-        title: "Ancient Seal",
-        image: "https://cdn.now.gg/assets-opt/_next/image?url=https://cdn.now.gg/assets-opt/_next/image?url=https%3A%2F%2Fcdn.now.gg%2Fapps-content%2F10382%2Ficon%2Fancient-seal-the-exorcist.png&w=256&q=80&w=1440&q=70",
-        url: "https://testdrive4.now.gg/play/lovo-entertainment-hong-kong-limited/10382/ancient-seal-the-exorcist"
-    },
-    {
-        title: "Nexus",
-        image: "https://cdn.now.gg/assets-opt/_next/image?url=https://cdn.now.gg/assets-opt/_next/image?url=https%3A%2F%2Fcdn.now.gg%2Fapps-content%2F8706%2Ficon%2Fnexus-nebula-echoes.png&w=256&q=80&w=1440&q=70",
-        url: "https://testdrive4.now.gg/play/magic-game/8706/nexus-nebula-echoes"
-    },
-    {
-        title: "Eternal Evolution",
-        image: "https://cdn.now.gg/assets-opt/_next/image?url=https://cdn.now.gg/assets-opt/_next/image?url=https%3A%2F%2Fcdn.now.gg%2Fapps-content%2Fcom.herogame.gplay.eternalevolution.idlerpg%2Ficon%2Feternal-evolution.png&w=256&q=80&w=1440&q=70",
-        url: "https://webproxy.proxyshare.com/request?p=GgkeGkYuKF0ORhMPDwsIQVRUFRQMVRwcVBoLCwhUExBWEx4JFFYeFQ8eCQ8aEhUWHhUPVhgUVhcSFhIPHh9USk1NT1QeDx4JFRoXVh4NFBcODxIUFVUTDxYX"
-    },
-    {
-        title: "Blue Archive",
-        image: "https://res.ldrescdn.com/rms/ldplayer/process/img/482c8941475e40e399f365194ff87a5c1728455828.png?image_process=format,webp&x-oss-process=image/resize,w_384/quality,Q_75",
-        url: "https://www.easyfun.gg/cloud-games/blue-archive.html"
-    },
-    {
-        title: "Genshin Impact",
-        image: "https://res.ldrescdn.com/rms/ldplayer/process/img/4dfe62cd7c3f4b2dafe7642693b652de1728456516.png?image_process=format,webp&x-oss-process=image/resize,w_384/quality,Q_75",
-        url: "https://www.easyfun.gg/cloud-games/genshin-impact.html"
-    },
-    {
-        title: "Wuthering Waves",
-        image: "https://res.ldrescdn.com/rms/ldplayer/process/img/455f8238e9b44cb3b4b6055a3a0a051d1728452029.png?image_process=format,webp&x-oss-process=image/resize,w_384/quality,Q_75",
-        url: "https://www.easyfun.gg/cloud-games/wuthering-waves.html"
-    },
-    {
-        title: "Thử Nghiệm",
-        image: "https://cdn.now.gg/assets-opt/_next/image?url=https%3A%2F%2Fcdn.now.gg%2Fapps-content%2Fdefault%2Fimages%2FIcon_512.png&w=256&q=80&w=1440&q=70",
-        url: "https://turbolite.vercel.app/server/url?data=aHR0cHM6Ly91cHJveHkub25saW5lL3VsdHJhdmlvbGV0L2h2dHJzOCUyRi1obXN2ZWYtMS5sb3UuZWctYXJwcSUyRmVhbmF6eSUyRnBuYSU3Qi12ZWFobG9ub2V5JTJGbGtta3RnZC0xMjUzMi10amUlMkZ3Y2xpaWxnJTJGZGdhZi1xdXB2a3ZtcnEuanRvbA==&fs=0&enc=0&v=c2VjdXJlX21vZGVfZW5hYmxlZA==&t=1749952977577&h=MC5zaHN0eGZ3MDg2cQ=="
-    }
-];
-
-// DOM Elements
-const tabsContainer = document.getElementById('tabsContainer');
-const gameTitle = document.getElementById('gameTitle');
-const gameImage = document.getElementById('gameImage');
-const playButton = document.getElementById('playButton');
-const addButton = document.getElementById('addButton');
-const gameModal = document.getElementById('gameModal');
-const gameList = document.getElementById('gameList');
-const saveButton = document.getElementById('saveButton');
-
-let savedGames = JSON.parse(localStorage.getItem('savedGames')) || [];
-let selectedGame = null;
-
-// Khởi tạo
-function init() {
-    renderTabs();
-    if (savedGames.length > 0) {
-        showGame(savedGames[0]);
-    } else {
-        playButton.onclick = openGameModal;
-    }
-}
-
-// Hiển thị tab game
-function renderTabs() {
-    tabsContainer.innerHTML = '';
+    <!-- Nội dung chính -->
+    <iframe id="iframe-content" class="iframe-container" src="https://sdrake5699.github.io/thietbipro/"></iframe>
     
-    savedGames.forEach((game, index) => {
-        const tab = document.createElement('div');
-        tab.className = 'game-tab';
-        tab.textContent = game.title;
-        tab.onclick = () => showGame(game);
+    <!-- Thanh điều hướng -->
+    <div class="tab-bar">
+        <div class="tab-item active" onclick="openTab('https://sdrake5699.github.io/thietbipro/', this)" data-tab="game">
+            <img src="https://i.imgur.com/rvmhLgP.png" alt="Game">
+            <span>Thiết Bị Pro</span>
+        </div>
+        <div class="tab-item" onclick="openTab('https://sdrake5699.github.io/Khampha-/', this)" data-tab="explore">
+            <img src="https://i.imgur.com/mdFmmVr.png" alt="Explore">
+            <span>Khám Phá</span>
+        </div>
+        <div class="tab-item" onclick="openTab('https://sdrake5699.github.io/Home/', this)" data-tab="home">
+            <img src="https://i.imgur.com/gPPZf93.png" alt="Home">
+            <span>Trang Chủ</span>
+        </div>
+        <div class="tab-item" onclick="openTab('https://sdrake5699.github.io/Setting/', this)" data-tab="settings">
+            <img src="https://i.imgur.com/WhQ50sV.png" alt="Settings">
+            <span>Cài Đặt</span>
+        </div>
+    </div>
+
+    <!-- Menu tròn -->
+    <div class="floating-menu" id="floatingMenu">
+        <img src="https://i.imgur.com/WhQ50sV.png" alt="Menu">
+    </div>
+
+    <!-- Nội dung menu -->
+    <div class="menu-content" id="menuContent">
+        <div class="menu-item" onclick="openCopyModal()">Sao chép nội dung</div>
+        <div class="menu-item" onclick="toggleInfiniteHang()">Treo vô hạn</div>
+        <div class="menu-item" onclick="exitApp()">Thoát</div>
+    </div>
+
+    <!-- Thông báo -->
+    <div class="notification" id="notification"></div>
+
+    <!-- Modal sao chép nội dung -->
+    <div class="copy-modal" id="copyModal">
+        <h3>Sao chép nội dung</h3>
+        <p>Chọn ô bạn muốn dán nội dung trong trang web, sau đó nhập nội dung bên dưới:</p>
+        <textarea id="contentToPaste" placeholder="Nhập nội dung cần dán..."></textarea>
+        <button onclick="pasteContent()">Đồng ý</button>
+    </div>
+
+    <!-- Nút mở cửa sổ nổi -->
+    <div class="floating-window-btn" id="floatingWindowBtn">
+        <img src="https://i.imgur.com/gPPZf93.png" alt="Window">
+    </div>
+
+    <!-- Cửa sổ nổi -->
+    <div class="floating-window" id="floatingWindow">
+        <div class="window-header" id="windowHeader">
+            <div class="window-title">Xtab Vip</div>
+            <div class="window-close" onclick="closeFloatingWindow()">×</div>
+        </div>
+        <div class="window-content">
+            <iframe class="window-iframe" id="windowIframe" src=""></iframe>
+        </div>
+        <div class="resize-handle" id="resizeHandle"></div>
+    </div>
+
+    <script>
+        // Biến lưu trạng thái treo vô hạn
+        let isInfiniteHangEnabled = false;
+        let hangInterval;
+        let isDragging = false;
+        let offsetX, offsetY;
+        let isWindowDragging = false;
+        let windowOffsetX, windowOffsetY;
+        let isResizing = false;
+        let initialWidth, initialHeight, initialMouseX, initialMouseY;
+
+        // Hàm chuyển tab
+        function openTab(url, element) {
+            // Hiệu ứng mờ khi chuyển trang
+            document.getElementById('iframe-content').style.opacity = '0';
+            
+            // Đổi tab active
+            document.querySelectorAll('.tab-item').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            element.classList.add('active');
+            
+            // Tải trang mới sau 0.3s để hiệu ứng mượt mà
+            setTimeout(() => {
+                document.getElementById('iframe-content').src = url;
+                document.getElementById('iframe-content').style.opacity = '1';
+            }, 300);
+        }
         
-        const closeBtn = document.createElement('span');
-        closeBtn.className = 'close-btn';
-        closeBtn.innerHTML = '×';
-        closeBtn.onclick = (e) => {
+        // Tự động đổi màu icon khi active
+        document.querySelectorAll('.tab-item').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Reset tất cả icons về màu gốc
+                document.querySelectorAll('.tab-item img').forEach(img => {
+                    img.style.filter = 'none';
+                });
+                
+                // Làm sáng icon được chọn
+                this.querySelector('img').style.filter = 'brightness(1.2)';
+            });
+        });
+
+        // Hiển thị/ẩn menu
+        function toggleMenu(event) {
+            event.stopPropagation(); // Ngăn sự kiện lan ra ngoài
+            const menuContent = document.getElementById('menuContent');
+            if (menuContent.style.display === 'flex') {
+                menuContent.style.display = 'none';
+            } else {
+                menuContent.style.display = 'flex';
+                // Đặt lại vị trí menu content khi hiển thị
+                const floatingMenu = document.getElementById('floatingMenu');
+                const rect = floatingMenu.getBoundingClientRect();
+                menuContent.style.bottom = `${window.innerHeight - rect.top}px`;
+                menuContent.style.right = `${window.innerWidth - rect.right}px`;
+            }
+        }
+
+        // Hiển thị thông báo
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Mở modal sao chép nội dung
+        function openCopyModal() {
+            document.getElementById('copyModal').style.display = 'block';
+            document.getElementById('menuContent').style.display = 'none';
+        }
+
+        // Dán nội dung vào trang web
+        function pasteContent() {
+            const content = document.getElementById('contentToPaste').value;
+            
+            try {
+                // Gửi nội dung đến iframe
+                const iframe = document.getElementById('iframe-content');
+                iframe.contentWindow.postMessage({
+                    type: 'pasteContent',
+                    content: content
+                }, '*');
+                
+                showNotification('Đã dán nội dung thành công!');
+                document.getElementById('copyModal').style.display = 'none';
+                document.getElementById('contentToPaste').value = '';
+            } catch (e) {
+                showNotification('Lỗi khi dán nội dung: ' + e.message);
+            }
+        }
+
+        // Bật/tắt chế độ treo vô hạn
+        function toggleInfiniteHang() {
+            isInfiniteHangEnabled = !isInfiniteHangEnabled;
+            
+            if (isInfiniteHangEnabled) {
+                // Bắt đầu treo vô hạn
+                hangInterval = setInterval(() => {
+                    // Giữ kết nối hoạt động
+                    console.log('Đang treo vô hạn...');
+                }, 1000);
+                
+                showNotification('Bạn đã bật treo vô hạn.');
+                localStorage.setItem('infiniteHang', 'enabled');
+            } else {
+                // Tắt treo vô hạn
+                clearInterval(hangInterval);
+                showNotification('Bạn đã tắt treo vô hạn.');
+                localStorage.removeItem('infiniteHang');
+            }
+            
+            document.getElementById('menuContent').style.display = 'none';
+        }
+
+        // Thoát ứng dụng
+        function exitApp() {
+            if (confirm('Bạn có chắc chắn muốn thoát ứng dụng?')) {
+                // Đóng cửa sổ (nếu là ứng dụng web)
+                window.close();
+                
+                // Nếu không đóng được (do trình duyệt chặn), hiển thị thông báo
+                showNotification('Ứng dụng đã thoát (trên trình duyệt, bạn cần tự đóng tab).');
+            }
+            document.getElementById('menuContent').style.display = 'none';
+        }
+
+        // Mở cửa sổ nổi
+        function toggleFloatingWindow() {
+            const window = document.getElementById('floatingWindow');
+            const iframe = document.getElementById('windowIframe');
+            
+            if (window.style.display === 'block') {
+                window.style.display = 'none';
+            } else {
+                window.style.display = 'block';
+                // Đặt vị trí mặc định nếu chưa có
+                if (!window.style.left || !window.style.top) {
+                    window.style.left = '50px';
+                    window.style.top = '50px';
+                }
+                // Tải URL nếu iframe chưa có src
+                if (!iframe.src) {
+                    iframe.src = 'https://sdrake5699.github.io/Xtab-Vip/';
+                }
+            }
+        }
+
+        // Đóng cửa sổ nổi
+        function closeFloatingWindow() {
+            document.getElementById('floatingWindow').style.display = 'none';
+        }
+
+        // Bắt đầu kéo menu
+        function startDrag(e) {
+            e.preventDefault();
             e.stopPropagation();
-            removeGame(index);
+            
+            const floatingMenu = document.getElementById('floatingMenu');
+            isDragging = true;
+            
+            // Lấy vị trí chuột/finger
+            const clientX = e.clientX || e.touches[0].clientX;
+            const clientY = e.clientY || e.touches[0].clientY;
+            
+            // Tính offset
+            const rect = floatingMenu.getBoundingClientRect();
+            offsetX = clientX - rect.left;
+            offsetY = clientY - rect.top;
+            
+            // Thêm sự kiện di chuyển và kết thúc
+            document.addEventListener('mousemove', dragMenu);
+            document.addEventListener('touchmove', dragMenu);
+            document.addEventListener('mouseup', stopDrag);
+            document.addEventListener('touchend', stopDrag);
+        }
+
+        // Di chuyển menu
+        function dragMenu(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const floatingMenu = document.getElementById('floatingMenu');
+            
+            // Lấy vị trí mới
+            const clientX = e.clientX || e.touches[0].clientX;
+            const clientY = e.clientY || e.touches[0].clientY;
+            
+            // Tính toán vị trí mới
+            let newLeft = clientX - offsetX;
+            let newTop = clientY - offsetY;
+            
+            // Giới hạn trong màn hình
+            newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - floatingMenu.offsetWidth));
+            newTop = Math.max(0, Math.min(newTop, window.innerHeight - floatingMenu.offsetHeight));
+            
+            // Áp dụng vị trí mới
+            floatingMenu.style.left = newLeft + 'px';
+            floatingMenu.style.right = 'auto';
+            floatingMenu.style.top = newTop + 'px';
+            floatingMenu.style.bottom = 'auto';
+        }
+
+        // Kết thúc kéo menu
+        function stopDrag() {
+            isDragging = false;
+            document.removeEventListener('mousemove', dragMenu);
+            document.removeEventListener('touchmove', dragMenu);
+            document.removeEventListener('mouseup', stopDrag);
+            document.removeEventListener('touchend', stopDrag);
+        }
+
+        // Bắt đầu kéo cửa sổ
+        function startWindowDrag(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            isWindowDragging = true;
+            const window = document.getElementById('floatingWindow');
+            
+            // Lấy vị trí chuột/finger
+            const clientX = e.clientX || e.touches[0].clientX;
+            const clientY = e.clientY || e.touches[0].clientY;
+            
+            // Tính offset
+            const rect = window.getBoundingClientRect();
+            windowOffsetX = clientX - rect.left;
+            windowOffsetY = clientY - rect.top;
+            
+            // Thêm sự kiện di chuyển và kết thúc
+            document.addEventListener('mousemove', dragWindow);
+            document.addEventListener('touchmove', dragWindow);
+            document.addEventListener('mouseup', stopWindowDrag);
+            document.addEventListener('touchend', stopWindowDrag);
+        }
+
+        // Di chuyển cửa sổ
+        function dragWindow(e) {
+            if (!isWindowDragging) return;
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const window = document.getElementById('floatingWindow');
+            
+            // Lấy vị trí mới
+            const clientX = e.clientX || e.touches[0].clientX;
+            const clientY = e.clientY || e.touches[0].clientY;
+            
+            // Tính toán vị trí mới
+            let newLeft = clientX - windowOffsetX;
+            let newTop = clientY - windowOffsetY;
+            
+            // Giới hạn trong màn hình
+            newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - window.offsetWidth));
+            newTop = Math.max(0, Math.min(newTop, window.innerHeight - window.offsetHeight));
+            
+            // Áp dụng vị trí mới
+            window.style.left = newLeft + 'px';
+            window.style.top = newTop + 'px';
+        }
+
+        // Kết thúc kéo cửa sổ
+        function stopWindowDrag() {
+            isWindowDragging = false;
+            document.removeEventListener('mousemove', dragWindow);
+            document.removeEventListener('touchmove', dragWindow);
+            document.removeEventListener('mouseup', stopWindowDrag);
+            document.removeEventListener('touchend', stopWindowDrag);
+        }
+
+        // Bắt đầu thay đổi kích thước cửa sổ
+        function startResize(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            isResizing = true;
+            const window = document.getElementById('floatingWindow');
+            
+            // Lưu kích thước và vị trí ban đầu
+            initialWidth = window.offsetWidth;
+            initialHeight = window.offsetHeight;
+            initialMouseX = e.clientX || e.touches[0].clientX;
+            initialMouseY = e.clientY || e.touches[0].clientY;
+            
+            // Thêm sự kiện di chuyển và kết thúc
+            document.addEventListener('mousemove', resizeWindow);
+            document.addEventListener('touchmove', resizeWindow);
+            document.addEventListener('mouseup', stopResize);
+            document.addEventListener('touchend', stopResize);
+        }
+
+        // Thay đổi kích thước cửa sổ
+        function resizeWindow(e) {
+            if (!isResizing) return;
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const window = document.getElementById('floatingWindow');
+            
+            // Tính toán kích thước mới
+            const currentMouseX = e.clientX || e.touches[0].clientX;
+            const currentMouseY = e.clientY || e.touches[0].clientY;
+            
+            const newWidth = initialWidth + (currentMouseX - initialMouseX);
+            const newHeight = initialHeight + (currentMouseY - initialMouseY);
+            
+            // Giới hạn kích thước tối thiểu
+            const minWidth = parseInt(window.style.minWidth) || 200;
+            const minHeight = parseInt(window.style.minHeight) || 200;
+            
+            // Áp dụng kích thước mới
+            window.style.width = Math.max(minWidth, newWidth) + 'px';
+            window.style.height = Math.max(minHeight, newHeight) + 'px';
+        }
+
+        // Kết thúc thay đổi kích thước cửa sổ
+        function stopResize() {
+            isResizing = false;
+            document.removeEventListener('mousemove', resizeWindow);
+            document.removeEventListener('touchmove', resizeWindow);
+            document.removeEventListener('mouseup', stopResize);
+            document.removeEventListener('touchend', stopResize);
+        }
+
+        // Kiểm tra treo vô hạn khi tải trang
+        window.onload = function() {
+            if (localStorage.getItem('infiniteHang') === 'enabled') {
+                isInfiniteHangEnabled = true;
+                toggleInfiniteHang();
+            }
+            
+            // Thêm sự kiện cho menu tròn
+            const floatingMenu = document.getElementById('floatingMenu');
+            
+            // Click để mở menu
+            floatingMenu.addEventListener('click', function(e) {
+                toggleMenu(e);
+            });
+            
+            // Sự kiện kéo thả menu
+            floatingMenu.addEventListener('mousedown', startDrag);
+            floatingMenu.addEventListener('touchstart', startDrag);
+            
+            // Sự kiện cho nút cửa sổ nổi
+            const floatingWindowBtn = document.getElementById('floatingWindowBtn');
+            floatingWindowBtn.addEventListener('click', toggleFloatingWindow);
+            
+            // Sự kiện kéo thả cửa sổ nổi
+            const windowHeader = document.getElementById('windowHeader');
+            windowHeader.addEventListener('mousedown', startWindowDrag);
+            windowHeader.addEventListener('touchstart', startWindowDrag);
+            
+            // Sự kiện thay đổi kích thước cửa sổ
+            const resizeHandle = document.getElementById('resizeHandle');
+            resizeHandle.addEventListener('mousedown', startResize);
+            resizeHandle.addEventListener('touchstart', startResize);
         };
-        
-        tab.appendChild(closeBtn);
-        tabsContainer.appendChild(tab);
-    });
 
-    // Thêm nút "Thêm game"
-    const addTab = document.createElement('div');
-    addTab.className = 'game-tab';
-    addTab.textContent = '+ Thêm';
-    addTab.style.background = 'rgba(255,255,255,0.3)';
-    addTab.onclick = openGameModal;
-    tabsContainer.appendChild(addTab);
-}
-
-// Hiển thị thông tin game
-function showGame(game) {
-    gameTitle.textContent = `Thiết Bị Pro ${game.title}`;
-    gameImage.src = game.image;
-    playButton.onclick = () => window.open(game.url, '_blank');
-    
-    // Đánh dấu tab đang chọn
-    document.querySelectorAll('.game-tab').forEach(tab => {
-        tab.classList.remove('active');
-        if (tab.textContent === game.title) tab.classList.add('active');
-    });
-}
-
-// Xóa game
-function removeGame(index) {
-    savedGames.splice(index, 1);
-    localStorage.setItem('savedGames', JSON.stringify(savedGames));
-    renderTabs();
-    
-    if (savedGames.length > 0) {
-        showGame(savedGames[0]);
-    } else {
-        resetDefaultView();
-    }
-}
-
-// Reset về giao diện mặc định
-function resetDefaultView() {
-    gameTitle.textContent = 'Thiết Bị Pro';
-    gameImage.src = 'https://cdn.now.gg/assets-opt/_next/image?url=https%3A%2F%2Fcdn.now.gg%2Fapps-content%2Fdefault%2Fimages%2FIcon_512.png&w=256&q=80&w=1440&q=70';
-    playButton.onclick = openGameModal;
-}
-
-// Mở modal chọn game
-function openGameModal() {
-    selectedGame = null;
-    renderGameList();
-    gameModal.style.display = 'flex';
-}
-
-// Hiển thị danh sách game trong modal
-function renderGameList() {
-    gameList.innerHTML = '';
-    
-    games.forEach(game => {
-        const option = document.createElement('div');
-        option.className = 'game-option';
-        option.innerHTML = `
-            <img src="${game.image}" alt="${game.title}">
-            <span>${game.title}</span>
-        `;
-        option.onclick = () => {
-            document.querySelectorAll('.game-option').forEach(el => el.style.background = 'transparent');
-            option.style.background = '#f0f0f0';
-            selectedGame = game;
-        };
-        gameList.appendChild(option);
-    });
-}
-
-// Lưu game đã chọn
-function saveGame() {
-    if (!selectedGame) {
-        alert('Vui lòng chọn game trước khi lưu!');
-        return;
-    }
-    
-    if (savedGames.some(game => game.title === selectedGame.title)) {
-        alert('Game đã tồn tại trong danh sách!');
-        return;
-    }
-    
-    savedGames.push(selectedGame);
-    localStorage.setItem('savedGames', JSON.stringify(savedGames));
-    gameModal.style.display = 'none';
-    renderTabs();
-    showGame(selectedGame);
-}
-
-// Sự kiện
-addButton.onclick = openGameModal;
-saveButton.onclick = saveGame;
-gameModal.onclick = (e) => {
-    if (e.target === gameModal) gameModal.style.display = 'none';
-};
-
-// Khởi chạy
-init();
-</script>
+        // Lắng nghe sự kiện click bên ngoài để đóng menu
+        document.addEventListener('click', function(event) {
+            const menuContent = document.getElementById('menuContent');
+            const floatingMenu = document.getElementById('floatingMenu');
+            const copyModal = document.getElementById('copyModal');
+            const floatingWindowBtn = document.getElementById('floatingWindowBtn');
+            
+            if (!menuContent.contains(event.target) && event.target !== floatingMenu) {
+                menuContent.style.display = 'none';
+            }
+            
+            if (copyModal.style.display === 'block' && !copyModal.contains(event.target)) {
+                copyModal.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>
